@@ -2,27 +2,17 @@ import requests
 from authentification import auth
 import re
 
-'''
-Реализованы фичи-
-Авторизация вынесена в отдельный модуль
-Отсылка личных сообщений одному или нескольким пользователям
-'''
-
 
 def send_message(server_):
-    print("Введите сообщение:")
-    text = input()
-    pattern_user = r"@([\w]+)"
+    text = input("Введите сообщение: \n")
+    pattern_user = r"^@([\w]+)"
     pattern_action = r'\/(reply) (\d+) (.+)'
     tag = re.findall(pattern_user, text)
     result = re.findall(pattern_action, text)
     action = 'send'
     msg_id = None
-    print(result)
     if result:
-        print(result)
         action, msg_id, text = result[0]
-        print(text)
     if text.lower() == 'exit':
         requests.post(
             f"{server_}/send",

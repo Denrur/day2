@@ -3,12 +3,6 @@ from datetime import datetime
 from authentification import auth
 import requests
 
-'''
-Реализованы фичи-
-Авторизация в ресивере
-Получение личных сообщений
-'''
-
 
 def get_messages(user, server_, last=None):
     resp = requests.get(f"{server_}/messages",

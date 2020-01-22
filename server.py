@@ -7,14 +7,7 @@ from flask import Flask, request
 import json
 app = Flask(__name__)
 
-'''
-Вьюха /status дополнительно показывает общее количество сообщений,а так же количество пользователей онлайн
 
-Реализованы фичи-
-Загрузка/Сохранение истории сообщений и списка пользователей
-Очистка файлов с историей сообщений и списком пользователей(/wipe)
-Ответ на определенное сообщение
-'''
 messages = []
 users = {}
 path = os.path.dirname(os.path.realpath(__file__))
@@ -33,12 +26,6 @@ try:
         users = json.load(load_users)
 except FileNotFoundError:
     print('There is no saved users')
-
-try:
-    last_id = max([message['id'] for message in messages])
-
-except ValueError:
-    last_id = 0
 
 
 @app.route("/")
@@ -87,7 +74,6 @@ def messages_view():
 
 @app.route("/send", methods=['POST'])
 def send_view():
-    global last_id
     """
     Отправка сообщений
     input: {
@@ -112,14 +98,17 @@ def send_view():
     tag = data['tag']
     action = data['action']
     msg_id = data.get('msg_id')
+    try:
+        last_id = max([message['id'] for message in messages])
+
+    except ValueError:
+        last_id = 0
 
     last_id += 1
 
     if action == 'reply':
         text = [message for message in messages if message['id'] == int(msg_id)][0]['text'] + "\n" + text
-        print(text)
     messages.append({"username": username, "text": text, "time": time.time(), 'tag': tag, 'id': last_id})
-    last_id += 1
     return {'ok': True}
 
 
